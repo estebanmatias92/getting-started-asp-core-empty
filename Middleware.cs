@@ -5,6 +5,9 @@
     {
         private RequestDelegate _next;
 
+        public Middleware()
+        { }
+
         public Middleware(RequestDelegate next)
         {
             _next = next;
@@ -20,7 +23,11 @@
                 }
                 await context.Response.WriteAsync("\n\nMiddleware (Class-based):\nBEFORE the main response body or '_next() callback'");
             }
-            await _next(context);
+
+            if (_next != null)
+            {
+                await _next(context);
+            }
         }
     }
 }

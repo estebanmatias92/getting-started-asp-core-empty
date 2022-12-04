@@ -1,7 +1,23 @@
 using ASPCoreEmpty;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Middleware with options from FruitOptions.cs class
+builder.Services.Configure<FruitOptions>(options =>
+{
+    options.Name = "Watermelon";
+});
+
+// Building the app object with all the configuration
 var app = builder.Build();
+
+// Preparing endpoint to see Fruit Middleware in action
+app.MapGet("/fruit", async (HttpContext context, IOptions<FruitOptions> FruitOptions) =>
+{
+    FruitOptions options = FruitOptions.Value;
+    await context.Response.WriteAsync($"\nFruit Middleware options:\nName: {options.Name},\nColor: {options.Color}");
+});
 
 // Adding a Lamda-based Mioddleware and modifying the HttpResponse Body BEFORE the _next callback is called
 app.Use(async (context, next) =>
@@ -37,14 +53,19 @@ app.Use(async (context, next) =>
 // Creating a Branching Middleware
 app.Map("/branch", branch =>
 {
-    branch.Use(async (HttpContext context, Func<Task> next) =>
+    //branch.Use(async (HttpContext context, Func<Task> next) =>
+    branch.Run(async (HttpContext context) =>
     {
         await context.Response.WriteAsync("\n\nMiddleware (branch):\nSeparated response from the request pipeline\nTerminal middleware cuz it is not invoking next callback from the request pipeline");
     });
+    branch.Run(new Middleware().Invoke);
 });
 
 // Adding a Class-based Middleware
 app.UseMiddleware<Middleware>();
+
+// Adding Class-based Middleware with options configured
+app.UseMiddleware<FruitMiddleware>();
 
 /*
     Main
