@@ -21,6 +21,28 @@ app.Use(async (context, next) =>
     await context.Response.WriteAsync($"\n\nMiddleware (Lambda-based):\nAFTER the main response body or '_next() callback'\nStatus Code: {context.Response.StatusCode}");
 });
 
+// Adding a Middleware Before the next() callback and dont call the next() callback to stop the flow of the pipeline right here
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/short")
+    {
+        await context.Response.WriteAsync("\n\nMiddleware (lambda-based):\nShort-circuiting the http request pipeline");
+    }
+    else
+    {
+        await next();
+    }
+});
+
+// Creating a Branching Middleware
+app.Map("/branch", branch =>
+{
+    branch.Use(async (HttpContext context, Func<Task> next) =>
+    {
+        await context.Response.WriteAsync("\n\nMiddleware (branch):\nSeparated response from the request pipeline\nTerminal middleware cuz it is not invoking next callback from the request pipeline");
+    });
+});
+
 // Adding a Class-based Middleware
 app.UseMiddleware<Middleware>();
 
