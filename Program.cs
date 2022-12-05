@@ -10,6 +10,9 @@ builder.Services.Configure<FruitOptions>(options =>
     options.Name = "Watermelon";
 });
 
+// Add services with dependency injection
+builder.Services.AddSingleton<IResponseFormatter, HtmlResponseFormatter>();
+
 // Building the app object with all the configuration
 var app = builder.Build();
 
@@ -69,18 +72,15 @@ app.UseMiddleware<Middleware>();
 app.UseMiddleware<FruitMiddleware>();
 
 // Dependency Injectin testing!!!!
-IResponseFormatter textFormatter = new TextResponseFormatter();
+//IResponseFormatter textFormatter = new TextResponseFormatter();
 // Adding endpoint to test the above service
-app.MapGet("/text-formatter", async context =>
-{
-    await textFormatter.Format(context, "Soy un Text Formatter");
-});
+app.MapGet("/text-formatter", async (HttpContext context, IResponseFormatter formatter) => { await formatter.Format(context, "Soy un Text Formatter"); });
 // Instantiating another service
-IResponseFormatter htmlFormatter = new HtmlResponseFormatter();
+//IResponseFormatter htmlFormatter = new HtmlResponseFormatter();
 // Adding endpoint to test the above service
-app.MapGet("/html-formatter", async context =>
+app.MapGet("/html-formatter", async (HttpContext context, IResponseFormatter formatter) =>
 {
-    await htmlFormatter.Format(context, "Soy un Html Formatter");
+    await formatter.Format(context, "Soy un Html Formatter");
 });
 
 /*
