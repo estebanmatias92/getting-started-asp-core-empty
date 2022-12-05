@@ -10,8 +10,11 @@ builder.Services.Configure<FruitOptions>(options =>
     options.Name = "Watermelon";
 });
 
-// Add services with dependency injection
+// Add services with dependency injection (Singleton Pattern)
 builder.Services.AddSingleton<IResponseFormatter, HtmlResponseFormatter>();
+
+// Add/Register new Service Guid with Transcient pattern
+builder.Services.AddTransient<IResponseFormatter, GuidService>();
 
 // Building the app object with all the configuration
 var app = builder.Build();
@@ -73,6 +76,7 @@ app.UseMiddleware<FruitMiddleware>();
 
 // Adding CustomMiddleware
 app.UseMiddleware<CustomMiddleware>();
+app.UseMiddleware<CustomMiddleware2>();
 
 // Dependency Injectin testing!!!!
 //IResponseFormatter textFormatter = new TextResponseFormatter();
