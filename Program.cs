@@ -14,7 +14,9 @@ builder.Services.Configure<FruitOptions>(options =>
 builder.Services.AddSingleton<IResponseFormatter, HtmlResponseFormatter>();
 
 // Add/Register new Service Guid with Transcient pattern
-builder.Services.AddTransient<IResponseFormatter, GuidService>();
+//builder.Services.AddTransient<IResponseFormatter, GuidService>();
+// Now register new Service dependency as scoped
+builder.Services.AddScoped<IResponseFormatter, GuidService>();
 
 // Building the app object with all the configuration
 var app = builder.Build();
@@ -76,7 +78,7 @@ app.UseMiddleware<FruitMiddleware>();
 
 // Adding CustomMiddleware
 app.UseMiddleware<CustomMiddleware>();
-app.UseMiddleware<CustomMiddleware2>();
+//app.UseMiddleware<CustomMiddleware2>();
 
 // Dependency Injectin testing!!!!
 //IResponseFormatter textFormatter = new TextResponseFormatter();
