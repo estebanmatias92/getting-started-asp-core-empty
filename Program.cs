@@ -1,4 +1,5 @@
 using ASPCoreEmpty;
+using ASPCoreEmpty.Services;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,6 +67,21 @@ app.UseMiddleware<Middleware>();
 
 // Adding Class-based Middleware with options configured
 app.UseMiddleware<FruitMiddleware>();
+
+// Dependency Injectin testing!!!!
+IResponseFormatter textFormatter = new TextResponseFormatter();
+// Adding endpoint to test the above service
+app.MapGet("/text-formatter", async context =>
+{
+    await textFormatter.Format(context, "Soy un Text Formatter");
+});
+// Instantiating another service
+IResponseFormatter htmlFormatter = new HtmlResponseFormatter();
+// Adding endpoint to test the above service
+app.MapGet("/html-formatter", async context =>
+{
+    await htmlFormatter.Format(context, "Soy un Html Formatter");
+});
 
 /*
     Main
