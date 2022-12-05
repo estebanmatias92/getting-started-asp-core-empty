@@ -71,6 +71,9 @@ app.UseMiddleware<Middleware>();
 // Adding Class-based Middleware with options configured
 app.UseMiddleware<FruitMiddleware>();
 
+// Adding CustomMiddleware
+app.UseMiddleware<CustomMiddleware>();
+
 // Dependency Injectin testing!!!!
 //IResponseFormatter textFormatter = new TextResponseFormatter();
 // Adding endpoint to test the above service
