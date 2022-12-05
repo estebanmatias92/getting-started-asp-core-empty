@@ -86,6 +86,9 @@ app.MapGet("/html-formatter", async (HttpContext context, IResponseFormatter for
     await formatter.Format(context, "Soy un Html Formatter");
 });
 
+// Register new Endpoint calling service CustomEndpoint
+app.MapGet("/custom-endpoint", CustomEndpoint.Endpoint);
+
 /*
     Main
  */
